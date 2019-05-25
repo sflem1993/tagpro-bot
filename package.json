@@ -1,0 +1,18 @@
+{
+  "name": "tagpro-bot",
+  "version": "1.0.0",
+  "description": "A sample Webpack build",
+  "scripts": {
+    "build": "webpack --config ./webpack.config.js"
+  },
+  "author": "Sean Fleming",
+  "license": "MIT",
+  "dependencies": {
+    "cookie": "^0.4.0",
+    "http": "0.0.0",
+    "socket.io-client": "^2.0.2"
+  },
+  "devDependencies": {
+    "webpack": "^2.6.1"
+  }
+}
