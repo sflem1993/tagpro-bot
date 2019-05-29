@@ -1,0 +1,22 @@
+jukes
+bounces
+studder step
+make them miss boosts/use boosts
+watch videos
+
+
+
+BOT
+	game state tracking via sockets
+	movement
+	pathfinding
+	map
+	powerups
+	decision making
+	
+	
+	movement
+		death
+		wall
+		bomb
+		gates

@@ -1,0 +1,12 @@
+{
+	"name": "Tagpro Bot",
+	"author": "Sean Fleming",
+	"version": "0.1",
+	"include": [
+		"https://tagpro.koalabeast.com/game",
+		"http://tagpro-maptest.koalabeast.com:*/",
+		"http://tangent.jukejuice.com:*",
+		"http://maptest2.newcompte.fr:*/"
+	],
+	"grant": "none"
+}
