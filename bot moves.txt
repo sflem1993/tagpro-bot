@@ -13,10 +13,12 @@ BOT
 	map
 	powerups
 	decision making
-	
-	
+
+
 	movement
 		death
 		wall
 		bomb
 		gates
+		
+		

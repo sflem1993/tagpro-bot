@@ -17,10 +17,7 @@ function initializeBot() {
   let bot = new Bot(window.tagpro)
   bot.initializeSocketListeners()
   let r = bot.gameInfo.getEnemyFlag()
-  console.log("the result is :", r[0])
-  console.log("the result is :", r[1])
-  console.log("Test over")
+  console.log("the result is :", r)
 }
 
-console.log("gottem")
 addToTagpro(initializeBot)

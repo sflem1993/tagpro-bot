@@ -31,8 +31,7 @@ export default class GameInfo {
 		this.neutralFlag = false
 		this.playerID = tagpro.playerId;
 		this.updateFlagLocations()
-		this.teamValue = tagpro.players[this.playerID].team; //get value from the Player object's team property
-		this.enemyTeamID = RED + BLUE - this.teamValue;
+		this.teamValue = tagpro.players[this.playerID].team;
         this.regrabFlagID = this.neutralFlag ? YELLOW : this.enemyTeamID;
 	}
 
@@ -40,7 +39,7 @@ export default class GameInfo {
 		let results = {x: player.x, y: player.y}
 		for (let key in results) {
   			if (results.hasOwnProperty(key)) {
-  				let new_value  = results[key] / 40
+  				let new_value  = Math.round(results[key] / 40)
     			results[key] = new_value
 			}
 		}

@@ -14,33 +14,33 @@ export default class Pathfinder {
 		for (let i=0; i<this.map.length; i++){
 			aStarGrid.push([])
 			for (let j = 0; j<this.map[i].length; j++) {
-				aStarGrid[i][j] = tagpro.map[i][j]//this.getPathFindingValue(this.map[i][j])
+				aStarGrid[i][j] = tagpro.map[i][j]
 			}
 		}
 		return aStarGrid
 	}
 
-	getPathFindingValue(value) {
-		if (this.notWallOrSpike(value)) {
-			return 1
-		} else {
-			return 0
-		}
-	}
-
 	getNeighbors(node) {
 		 let directions = [{x: 1, y: 0}, {x: 0, y: 1}, {x: -1, y: 0}, {x: 0, y:-1}]
 		 let resultingLocations = []
-		 for (let direction in directions) {
+		 for (let direction of directions) {
 		 	let new_x = node.x + direction.x
 		 	let new_y = node.y + direction.y
-		 	console.log("new x is " + new_x)
-		 	console.log("new y is " + new_y)
 		 	if (this.aStarGrid[new_x] && this.aStarGrid[new_x][new_y] && this.notWallOrSpike(this.aStarGrid[new_x][new_y])) {
 		 		resultingLocations.push({x: new_x, y: new_y})
 		 	}
 		}
+
+		//TODO, calc if diaganol movement is ok
 		return resultingLocations
+	}
+
+	getCost(point) {
+		if (this.notWallOrSpike(this.map[point.x][point.y])) {
+			return 1
+		} else {
+			return 999
+		}
 	}
 
 	notWallOrSpike(value) {
@@ -48,19 +48,22 @@ export default class Pathfinder {
 	}
 
 	heuristic(start, goal) {
-		let dx = abs(start.x - goal.x)
-	    let dy = abs(start.y - goal.y)
+		let dx = Math.abs(start.x - goal.x)
+	    let dy = Math.abs(start.y - goal.y)
 	    return 1 * (dx + dy)
+	}
+
+	getPointKey(point) {
+		return point.x + "/" + point.y
 	}
 
 	findPath(start, goal) {
 		console.log("start is ", start)
 		console.log("goal is ", goal)
-		let costs_so_far = {}
-		let came_from = {}
-		came_from[start] = null
-    	costs_so_far[start] = 0
-
+		let costsSoFar = {}
+		let cameFrom = {}
+		cameFrom[this.getPointKey(start)] = null
+    	costsSoFar[this.getPointKey(start)] = 0
 		let frontier = new TinyQueue([],  function (a, b) {
 			return a.priority - b.priority;
 		});
@@ -71,42 +74,30 @@ export default class Pathfinder {
 			if (currentNode.x === goal.x && currentNode.y === goal.y) {
 				break
 			}
-			let neighbors = this.getNeighbors(currentNode)
-			console.log("neighbors are ", neighbors)
-			neighbors.forEach((neighbor) => {
-				let new_cost = costs_so_far[currentNode] + graph.cost(currentNode, next)
-				if (!costs_so_far.hasOwnProperty(neighbor) || new_cost < costs_so_far[neighbor]) {
-					let priority = new_cost + this.heuristic(goal, neighbor)
+
+			this.getNeighbors(currentNode).forEach((neighbor) => {
+				let costSoFar = costsSoFar[this.getPointKey(currentNode)]
+				if (costSoFar === undefined) {
+					costSoFar = 0
+				}
+				let newCost = costSoFar + this.getCost(neighbor)
+				let neighborKey = this.getPointKey(neighbor)
+				if (!costsSoFar.hasOwnProperty(neighborKey) || newCost < costsSoFar[neighborKey]) {
+					costsSoFar[neighborKey] = newCost
+					let priority = newCost + this.heuristic(goal, neighbor)
 					neighbor.priority = priority
-					frontier.put(neighbor)
-					came_from[neighbor] = current
+					frontier.push(neighbor)
+					cameFrom[neighborKey] = currentNode
 				}
 			});
 		}
-		var results = []
-		results[0] = {x: 1, y:2}//came_from
-		results[1] = costs_so_far
-		return [came_from, costs_so_far]
-	}
-
-	getFlagLocation() {
-	    for (let i = 0; i < tagpro.map.length; i++) {
-	        for (let j = 0; y < yl; y++) {
-	            switch (Math.floor(tagpro.map[x][y])) {
-	                case 3:
-	                    if (color === 'red')
-	                        return {x: x * 40, y: y * 40};
-	                    break;
-	                case 4:
-	                    if (color === 'blue')
-	                        return {x: x * 40, y: y * 40};
-	                    break;
-	                case 16:
-	                    if (color === 'yellow')
-	                        return {x: x * 40, y: y * 40};
-	                    break;
-	            }
-	        }
-	    }
+		let path = [goal]
+		console.log("came from looks like this", cameFrom)
+		while(cameFrom[this.getPointKey(path[path.length-1])]) {
+			let nextStep = cameFrom[this.getPointKey(path[path.length-1])]
+			console.log("next step is ", nextStep)
+			path.push(nextStep)
+		}
+		return path
 	}
 }
