@@ -32,7 +32,10 @@ export default class GameInfo {
 		this.playerID = tagpro.playerId;
 		this.updateFlagLocations()
 		this.teamValue = tagpro.players[this.playerID].team;
+        this.enemyTeamID = RED + BLUE - this.teamValue
         this.regrabFlagID = this.neutralFlag ? YELLOW : this.enemyTeamID;
+        console.log("teamValue is ", this.teamValue)
+        console.log("regrabFlagID is ", this.regrabFlagID)
 	}
 
 	getPlayerTileLocation(player) {
@@ -54,6 +57,7 @@ export default class GameInfo {
 
 	getEnemyFlag() {
 		let enemyFlag = this.flags[this.regrabFlagID]
+        console.log("enemyFlag is ", enemyFlag)
 		return this.pathfinder.findPath(this.getSelfTileLocation(), enemyFlag)
 	}
 
