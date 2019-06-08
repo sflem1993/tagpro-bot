@@ -1,9 +1,11 @@
 import GameInfo from './gameInfo.js'
 import Pathfinder from './pathfinder.js'
+import Steerer from './steerer.js'
 export default class Bot {
 	constructor(tagpro) {
 		this.socket = tagpro.socket
 		this.gameInfo = new GameInfo(tagpro)
+		this.steerer = new Steerer(tagpro.socket)
 		this.self = tagpro.players[tagpro.playerId];
 	}
 
