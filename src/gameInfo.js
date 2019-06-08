@@ -1,8 +1,8 @@
-const WALL_TILES = 1
-const ANGLED_WALL_TILE = [1.1,1.2,1,3.3,1.4] //can set bouncepoint at center
-const NORMAL_TILES = [0,2,3,3.1,4,4.1,5,5.1,6,6.1,6.11,6.2,6.21,6.3,6.31,6.4,6.41]
-const POWERUP_TILES = [6,6.1,6.11,6.2,6.21,6.3,6.31]
-const DEATH_TILES = [7]
+const WALL_TILES = 1;
+const ANGLED_WALL_TILE = [1.1,1.2,1,3.3,1.4]; //can set bouncepoint at center
+const NORMAL_TILES = [0,2,3,3.1,4,4.1,5,5.1,6,6.1,6.11,6.2,6.21,6.3,6.31,6.4,6.41];
+const POWERUP_TILES = [6,6.1,6.11,6.2,6.21,6.3,6.31];
+const DEATH_TILES = [7];
 const RED_FLAG = 3;
 const RED_FLAG_TAKEN = 3.1;
 const BLUE_FLAG = 4;
@@ -14,13 +14,12 @@ const RED = 1;
 const BLUE = 2;
 const TILE_PIXELS = 40;
 
-
-import Pathfinder from './pathfinder.js'
+import Pathfinder from './pathfinder.js';
 export default class GameInfo {
 	constructor(tagpro) {
-		this.tagpro = tagpro
-		this.pathfinder = new Pathfinder(tagpro.map)
-		this.flags = []
+		this.tagpro = tagpro;
+		this.pathfinder = new Pathfinder(tagpro.map);
+		this.flags = [];
 		for (let i = 0; i < 3; i++) {
             this.flags.push({
                 x : -1,
@@ -28,37 +27,37 @@ export default class GameInfo {
                 captured: false,
             });
         }
-		this.neutralFlag = false
+		this.neutralFlag = false;
 		this.playerID = tagpro.playerId;
-		this.updateFlagLocations()
+		this.updateFlagLocations();
 		this.teamValue = tagpro.players[this.playerID].team;
-        this.enemyTeamID = RED + BLUE - this.teamValue
+        this.enemyTeamID = RED + BLUE - this.teamValue;
         this.regrabFlagID = this.neutralFlag ? YELLOW : this.enemyTeamID;
-        console.log("teamValue is ", this.teamValue)
-        console.log("regrabFlagID is ", this.regrabFlagID)
+        console.log("teamValue is ", this.teamValue);
+        console.log("regrabFlagID is ", this.regrabFlagID);
 	}
 
 	getPlayerTileLocation(player) {
-		let results = {x: player.x, y: player.y}
+		let results = {x: player.x, y: player.y};
 		for (let key in results) {
   			if (results.hasOwnProperty(key)) {
-  				let new_value  = Math.round(results[key] / 40)
-    			results[key] = new_value
+  				let new_value  = Math.round(results[key] / 40);
+    			results[key] = new_value;
 			}
 		}
 
-		return results
+		return results;
 	}
 
 	getSelfTileLocation() {
-		let player = this.tagpro.players[this.playerID]
-		return this.getPlayerTileLocation(player)
+		let player = this.tagpro.players[this.playerID];
+		return this.getPlayerTileLocation(player);
 	}
 
 	getEnemyFlag() {
-		let enemyFlag = this.flags[this.regrabFlagID]
-        console.log("enemyFlag is ", enemyFlag)
-		return this.pathfinder.findPath(this.getSelfTileLocation(), enemyFlag)
+		let enemyFlag = this.flags[this.regrabFlagID];
+        console.log("enemyFlag is ", enemyFlag);
+		return this.pathfinder.findPath(this.getSelfTileLocation(), enemyFlag);
 	}
 
     updateFlagLocations() {

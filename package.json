@@ -15,6 +15,7 @@
   },
   "devDependencies": {
     "jest": "^24.8.0",
+    "jshint": "^2.10.2",
     "webpack-cli": "^3.3.2",
     "webpack-userscript": "^2.3.0"
   }

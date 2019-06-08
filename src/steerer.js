@@ -34,7 +34,7 @@ export default class Steerer {
 		//damp = linear damping value (ball default = 0.5)
 		//
 		//normal (0.025)	juke juice (0.031)	team tiles (0.037)
-		this.d = 1 - (damping * step);
+		this.d = 1 - (this.damping * this.step);
 	}
 
 	//todo - limit to 2.5
