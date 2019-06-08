@@ -45,26 +45,26 @@ export default class Pathfinder {
 		let upLeft = {x: node.x - 1, y: node.y + 1};
 		let downLeft = {x: node.x - 1, y: node.y - 1};
 
-		if (cartesanTiles.right.valid && cartesanTiles.up.valid && this.aStarGrid[upRight.x][upRight.y]
-			&& this.notWallOrSpike(this.map[upRight.x][upRight.y])
+		if (cartesanTiles.right.valid && cartesanTiles.up.valid && this.aStarGrid[upRight.x][upRight.y] &&
+			this.notWallOrSpike(this.map[upRight.x][upRight.y])
 		) {
 			resultingLocations.push(upRight);
 		}
 
-		if (cartesanTiles.right.valid && cartesanTiles.down.valid && this.aStarGrid[downRight.x][downRight.y]
-			&& this.notWallOrSpike(this.map[downRight.x][downRight.y])
+		if (cartesanTiles.right.valid && cartesanTiles.down.valid && this.aStarGrid[downRight.x][downRight.y] &&
+			this.notWallOrSpike(this.map[downRight.x][downRight.y])
 		) {
 			resultingLocations.push(downRight);
 		}
 
-		if (cartesanTiles.left.valid && cartesanTiles.up.valid && this.aStarGrid[upLeft.x][upLeft.y]
-			&& this.notWallOrSpike(this.map[upLeft.x][upLeft.y])
+		if (cartesanTiles.left.valid && cartesanTiles.up.valid && this.aStarGrid[upLeft.x][upLeft.y] &&
+			this.notWallOrSpike(this.map[upLeft.x][upLeft.y])
 		) {
 			resultingLocations.push(upLeft);
 		}
 
-		if (cartesanTiles.left.valid && cartesanTiles.down.valid && this.aStarGrid[downLeft.x][downLeft.y]
-			&& this.notWallOrSpike(this.map[downLeft.x][downLeft.y])
+		if (cartesanTiles.left.valid && cartesanTiles.down.valid && this.aStarGrid[downLeft.x][downLeft.y] &&
+			this.notWallOrSpike(this.map[downLeft.x][downLeft.y])
 		) {
 			resultingLocations.push(downLeft);
 		}
@@ -110,7 +110,7 @@ export default class Pathfinder {
 		while (frontier.length > 0) {
 			let currentNode = frontier.pop();
 			if (currentNode.x === goal.x && currentNode.y === goal.y) {
-				break
+				break;
 			}
 			let currentNodeKey = this.getPointKey(currentNode);
 			this.getNeighbors(currentNode).forEach((neighbor) => {
@@ -136,6 +136,18 @@ export default class Pathfinder {
 			console.log("next step is ", nextStep);
 			path.push(nextStep);
 		}
+
+		//reverse array
+		//faster than reverse - see https://jsperf.com/js-array-reverse-vs-while-loop
+		let index = 0;
+		let len = path.length;
+		while (index < len) {
+			let end = (len - 1) - index;
+			path.push(path[end]);
+			path.splice(end, 1);
+		 	index++;
+		}
+		console.log("path is spathzzzzz ", path);
 		return path;
 	}
 }
