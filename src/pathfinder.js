@@ -21,17 +21,54 @@ export default class Pathfinder {
 	}
 
 	getNeighbors(node) {
-		 let directions = [{x: 1, y: 0}, {x: 0, y: 1}, {x: -1, y: 0}, {x: 0, y:-1}]
-		 let resultingLocations = []
-		 for (let direction of directions) {
-		 	let new_x = node.x + direction.x
-		 	let new_y = node.y + direction.y
-		 	if (this.aStarGrid[new_x] && this.aStarGrid[new_x][new_y] && this.notWallOrSpike(this.aStarGrid[new_x][new_y])) {
-		 		resultingLocations.push({x: new_x, y: new_y})
-		 	}
+		let cartesanTiles = {
+			right: {x: node.x + 1, y: node.y, valid: false},
+			up: {x: node.x, y: node.y + 1, valid: false},
+			left: {x: node.x - 1, y: node.y, valid: false},
+			down: {x: node.x, y: node.y - 1, valid: false}
+		}
+		let resultingLocations = []
+		Object.values(cartesanTiles).forEach(cartesanTile =>  {
+			if (
+				this.aStarGrid[cartesanTile.x] &&
+				this.aStarGrid[cartesanTile.x][cartesanTile.y] &&
+				this.notWallOrSpike(this.aStarGrid[cartesanTile.x][cartesanTile.y])
+			) {
+				resultingLocations.push({x: cartesanTile.x, y: cartesanTile.y})
+				cartesanTile.valid = true
+			}
+		});
+
+		//Manually checking the 4 diagonal tiles
+		let upRight = {x: node.x + 1, y: node.y + 1}
+		let downRight = {x: node.x + 1, y: node.y - 1}
+		let upLeft = {x: node.x - 1, y: node.y + 1}
+		let downLeft = {x: node.x - 1, y: node.y - 1}
+
+		if (cartesanTiles.right.valid && cartesanTiles.up.valid && this.aStarGrid[upRight.x][upRight.y]
+			&& this.notWallOrSpike(this.map[upRight.x][upRight.y])
+		) {
+			resultingLocations.push(upRight)
 		}
 
-		//TODO, calc if diaganol movement is ok
+		if (cartesanTiles.right.valid && cartesanTiles.down.valid && this.aStarGrid[downRight.x][downRight.y]
+			&& this.notWallOrSpike(this.map[downRight.x][downRight.y])
+		) {
+			resultingLocations.push(downRight)
+		}
+
+		if (cartesanTiles.left.valid && cartesanTiles.up.valid && this.aStarGrid[upLeft.x][upLeft.y]
+			&& this.notWallOrSpike(this.map[upLeft.x][upLeft.y])
+		) {
+			resultingLocations.push(upLeft)
+		}
+
+		if (cartesanTiles.left.valid && cartesanTiles.down.valid && this.aStarGrid[downLeft.x][downLeft.y]
+			&& this.notWallOrSpike(this.map[downLeft.x][downLeft.y])
+		) {
+			resultingLocations.push(downLeft)
+		}
+
 		return resultingLocations
 	}
 
@@ -50,6 +87,7 @@ export default class Pathfinder {
 	heuristic(start, goal) {
 		let dx = Math.abs(start.x - goal.x)
 	    let dy = Math.abs(start.y - goal.y)
+	    //TODO: update 1 with a getTileValue
 	    return 1 * (dx + dy)
 	}
 
