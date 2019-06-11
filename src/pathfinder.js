@@ -2,9 +2,9 @@ import TinyQueue from 'tinyqueue';
 const WALL_TILES = [1,1.1,1.2,1,3.3,1.4]; //can set bouncepoint at center
 const DEATH_TILES = [7];
 export default class Pathfinder {
-	constructor() {
+	constructor(map) {
 		this.nodes = [];
-		this.map = JSON.parse(JSON.stringify(tagpro.map));
+		this.map = JSON.parse(JSON.stringify(map));
 		this.aStarGrid = this.parseMap(this.map);
 	}
 
@@ -73,6 +73,7 @@ export default class Pathfinder {
 	}
 
 	getCost(point) {
+		//todo add team/tile/gate logic after basic velocity/movement stuff
 		if (this.notWallOrSpike(this.map[point.x][point.y])) {
 			return 1;
 		} else {
@@ -96,8 +97,6 @@ export default class Pathfinder {
 	}
 
 	findPath(start, goal) {
-		console.log("start is ", start);
-		console.log("goal is ", goal);
 		let costsSoFar = {};
 		let cameFrom = {};
 		cameFrom[this.getPointKey(start)] = null;
@@ -130,10 +129,8 @@ export default class Pathfinder {
 			});
 		}
 		let path = [goal];
-		console.log("came from looks like this", cameFrom);
 		while(cameFrom[this.getPointKey(path[path.length-1])]) {
 			let nextStep = cameFrom[this.getPointKey(path[path.length-1])];
-			console.log("next step is ", nextStep);
 			path.push(nextStep);
 		}
 
@@ -147,7 +144,7 @@ export default class Pathfinder {
 			path.splice(end, 1);
 		 	index++;
 		}
-		console.log("path is spathzzzzz ", path);
+		console.log("path is ", path);
 		return path;
 	}
 }

@@ -15,17 +15,33 @@ const KEY_DOWN = "keydown";
 */
 
 export default class Steerer {
-	constructor(socket) {
-		this.socket = socket;
-		this.accel = {
-			left: false,
-			right: false,
-			up: false,
-			down: false
-		};
+	constructor(tagpro) {
+		this.tagpro = tagpro;
+		this.accelX = false;
+		this.accelY = false;
 		this.step = (1.0 / 60.0); //60 fps
 		this.damping = 0.5;
 		this.d = 1 - (this.damping * this.step);
+	}
+
+	steer() {
+		console.log("accel x is ", this.accelX);
+		console.log("accel y is ", this.accelY);
+		if (this.accelX) {
+			this.deAccelRight();
+			this.accelLeft();
+		} else {
+			this.deAccelLeft();
+			this.accelRight();
+		}
+
+		if (this.accelY) {
+			this.deAccelDown();
+			this.accelUp();
+		} else {
+			this.deAccelUp();
+			this.accelDown();
+		}
 	}
 
 	//todo - limit to 2.5
@@ -36,22 +52,19 @@ export default class Steerer {
 	}
 
 	//https://www.wolframalpha.com/input/?i=solve((a+d+(-1+%2B+d%5En))%2F(-1+%2B+d)+%2B+d%5En+v%3Df,n)
+	////will use to predict if safe to cap/etc
 	getNumStepsForVelocity(initialVelocity, finalVelocity, accel) {
 		return (Math.log((a*this.d+finalVelocity*(this.d-1))/(accel*this.d+initialVelocity*(this.d-1)))/Math.log(this.d));
 	}
 
-	changeDirection(command, direction) {
-		this.socket.emit(command, {k: direction});
-	}
-
 	accelInDirection(direction) {
-		this.changeDirection(KEY_UP, direction);
-		this.accel[direction] = true;
+		console.log("TRUE ", direction);
+		this.tagpro.sendKeyPress(direction, true);
 	}
 
 	deAccelInDirection(direction) {
-		this.changeDirection(KEY_DOWN, direction);
-		this.accel[direction] = false;
+		console.log("FALSE ", direction);
+		this.tagpro.sendKeyPress(direction, false);
 	}
 
 	accelUp() {
@@ -74,7 +87,7 @@ export default class Steerer {
 		this.deAccelInDirection(UP);
 	}
 
-	deAcelDown() {
+	deAccelDown() {
 		this.deAccelInDirection(DOWN);
 	}
 

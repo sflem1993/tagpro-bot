@@ -56,7 +56,6 @@ export default class GameInfo {
 
 	getEnemyFlag() {
 		let enemyFlag = this.flags[this.regrabFlagID];
-        console.log("enemyFlag is ", enemyFlag);
 		return this.pathfinder.findPath(this.getSelfTileLocation(), enemyFlag);
 	}
 
