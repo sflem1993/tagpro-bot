@@ -17,8 +17,10 @@ const KEY_DOWN = "keydown";
 export default class Steerer {
 	constructor(tagpro) {
 		this.tagpro = tagpro;
-		this.accelX = false;
-		this.accelY = false;
+		this.accelUp = false;
+		this.accelDown = false;
+		this.accelLeft = false;
+		this.accelRight = false;
 		this.step = (1.0 / 60.0); //60 fps
 		this.damping = 0.5;
 		this.d = 1 - (this.damping * this.step);
@@ -29,35 +31,47 @@ export default class Steerer {
 		which means our momentum makes us swing wildly back and forth
 	*/
 	steer() {
-		if (this.accelX) {
-			this.deAccelLeft();
-			this.accelRight();
+		if (this.accelUp) {
+			this.pressUpArrow();
 		} else {
-			this.deAccelRight();
-			this.accelLeft();
+			this.releaseUpArrow();
 		}
 
-		if (this.accelY) {
-			this.deAccelDown();
-			this.accelUp();
+		if (this.accelDown) {
+			this.pressDownArrow();
 		} else {
-			this.deAccelUp();
-			this.accelDown();
+			this.releaseDownArrow();
+		}
+
+		if (this.accelLeft) {
+			this.pressLeftArrow();
+		} else {
+			this.releaseLeftArrow();
+		}
+
+		if (this.accelRight) {
+			this.pressRightArrow();
+		} else {
+			this.releaseRightArrow();
 		}
 	}
 
 	determineAccelDirections(nextTile, playerPhysics) {
 		//
 		if (playerPhysics.x < nextTile.x) {
-			this.accelX = true;
+			this.accelRight = true;
+			this.accelLeft = false;
 		} else {
-			this.accelX = false;
+			this.accelRight = false;
+			this.accelLeft = true;
 		}
 
 		if (playerPhysics.y < nextTile.y) {
-			this.accelY = true;
+			this.accelUp = true;
+			this.accelDown = false;
 		} else {
-			this.accelY = false;
+			this.accelUp = false;
+			this.accelDown = true;
 		}
 	}
 
@@ -74,43 +88,36 @@ export default class Steerer {
 		return (Math.log((a*this.d+finalVelocity*(this.d-1))/(accel*this.d+initialVelocity*(this.d-1)))/Math.log(this.d));
 	}
 
-	accelInDirection(direction) {
-		this.tagpro.sendKeyPress(direction, true);
-	}
-
-	deAccelInDirection(direction) {
-		this.tagpro.sendKeyPress(direction, false);
-	}
-
-	accelUp() {
+	pressUpArrow() {
 		this.tagpro.sendKeyPress(UP, true);
 	}
 
-	accelDown() {
+	pressDownArrow() {
 		this.tagpro.sendKeyPress(DOWN, true);
 	}
 
-	accelLeft() {
-		this.tagpro.sendKeyPress(LEFT, false);
-	}
-
-	accelRight() {
-		this.tagpro.sendKeyPress(RIGHT, false);
-	}
-
-	deAccelUp() {
+	releaseUpArrow() {
 		this.tagpro.sendKeyPress(UP, false);
 	}
 
-	deAccelDown() {
+	releaseDownArrow() {
 		this.tagpro.sendKeyPress(DOWN, false);
 	}
 
-	deAccelLeft() {
+	//for whatever reason, left and right are 'reverse' in the needed keypress when compared to up/down
+	pressLeftArrow() {
+		this.tagpro.sendKeyPress(LEFT, false);
+	}
+
+	pressRightArrow() {
+		this.tagpro.sendKeyPress(RIGHT, false);
+	}
+
+	releaseLeftArrow() {
 		this.tagpro.sendKeyPress(LEFT, true);
 	}
 
-	deAccelRight() {
+	releaseRightArrow() {
 		this.tagpro.sendKeyPress(RIGHT, true);
 	}
 }
