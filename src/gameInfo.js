@@ -14,11 +14,9 @@ const RED = 1;
 const BLUE = 2;
 const TILE_PIXELS = 40;
 
-import Pathfinder from './pathfinder.js';
 export default class GameInfo {
 	constructor(tagpro) {
 		this.tagpro = tagpro;
-		this.pathfinder = new Pathfinder(tagpro.map);
 		this.flags = [];
 		for (let i = 0; i < 3; i++) {
             this.flags.push({
@@ -37,26 +35,8 @@ export default class GameInfo {
         console.log("regrabFlagID is ", this.regrabFlagID);
 	}
 
-	getPlayerTileLocation(player) {
-		let results = {x: player.x, y: player.y};
-		for (let key in results) {
-  			if (results.hasOwnProperty(key)) {
-  				let new_value  = Math.round(results[key] / 40);
-    			results[key] = new_value;
-			}
-		}
-
-		return results;
-	}
-
-	getSelfTileLocation() {
-		let player = this.tagpro.players[this.playerID];
-		return this.getPlayerTileLocation(player);
-	}
-
-	getEnemyFlag() {
-		let enemyFlag = this.flags[this.regrabFlagID];
-		return this.pathfinder.findPath(this.getSelfTileLocation(), enemyFlag);
+	getEnemyFlagLocation(playerLocation) {
+		return this.flags[this.regrabFlagID];
 	}
 
     updateFlagLocations() {

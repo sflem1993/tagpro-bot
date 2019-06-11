@@ -24,15 +24,17 @@ export default class Steerer {
 		this.d = 1 - (this.damping * this.step);
 	}
 
+	/*
+		TODO - ALLOW SCENARIO WHERE both are deaccel -now, we only "switch" when we physically pass the point,
+		which means our momentum makes us swing wildly back and forth
+	*/
 	steer() {
-		console.log("accel x is ", this.accelX);
-		console.log("accel y is ", this.accelY);
 		if (this.accelX) {
-			this.deAccelRight();
-			this.accelLeft();
-		} else {
 			this.deAccelLeft();
 			this.accelRight();
+		} else {
+			this.deAccelRight();
+			this.accelLeft();
 		}
 
 		if (this.accelY) {
@@ -41,6 +43,21 @@ export default class Steerer {
 		} else {
 			this.deAccelUp();
 			this.accelDown();
+		}
+	}
+
+	determineAccelDirections(nextTile, playerPhysics) {
+		//
+		if (playerPhysics.x < nextTile.x) {
+			this.accelX = true;
+		} else {
+			this.accelX = false;
+		}
+
+		if (playerPhysics.y < nextTile.y) {
+			this.accelY = true;
+		} else {
+			this.accelY = false;
 		}
 	}
 
@@ -58,44 +75,42 @@ export default class Steerer {
 	}
 
 	accelInDirection(direction) {
-		console.log("TRUE ", direction);
 		this.tagpro.sendKeyPress(direction, true);
 	}
 
 	deAccelInDirection(direction) {
-		console.log("FALSE ", direction);
 		this.tagpro.sendKeyPress(direction, false);
 	}
 
 	accelUp() {
-		this.accelInDirection(UP);
+		this.tagpro.sendKeyPress(UP, true);
 	}
 
 	accelDown() {
-		this.accelInDirection(DOWN);
+		this.tagpro.sendKeyPress(DOWN, true);
 	}
 
 	accelLeft() {
-		this.accelInDirection(LEFT);
+		this.tagpro.sendKeyPress(LEFT, false);
 	}
 
 	accelRight() {
-		this.accelInDirection(RIGHT);
+		this.tagpro.sendKeyPress(RIGHT, false);
 	}
 
 	deAccelUp() {
-		this.deAccelInDirection(UP);
+		this.tagpro.sendKeyPress(UP, false);
 	}
 
 	deAccelDown() {
-		this.deAccelInDirection(DOWN);
+		this.tagpro.sendKeyPress(DOWN, false);
 	}
 
 	deAccelLeft() {
-		this.deAccelInDirection(LEFT);
+		this.tagpro.sendKeyPress(LEFT, true);
 	}
 
 	deAccelRight() {
-		this.deAccelInDirection(RIGHT);
+		this.tagpro.sendKeyPress(RIGHT, true);
 	}
 }

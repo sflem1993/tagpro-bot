@@ -128,14 +128,16 @@ export default class Pathfinder {
 				}
 			});
 		}
+
+		//build the path backwards from the cameFrom object
 		let path = [goal];
 		while(cameFrom[this.getPointKey(path[path.length-1])]) {
 			let nextStep = cameFrom[this.getPointKey(path[path.length-1])];
 			path.push(nextStep);
 		}
 
-		//reverse array
-		//faster than reverse - see https://jsperf.com/js-array-reverse-vs-while-loop
+		//reverse path
+		//this is faster than array.reverse() - see https://jsperf.com/js-array-reverse-vs-while-loop
 		let index = 0;
 		let len = path.length;
 		while (index < len) {
@@ -144,7 +146,6 @@ export default class Pathfinder {
 			path.splice(end, 1);
 		 	index++;
 		}
-		console.log("path is ", path);
 		return path;
 	}
 }
