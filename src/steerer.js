@@ -56,7 +56,7 @@ export default class Steerer {
 		}
 	}
 
-	determineAccelDirections(path, nextTile, playerTile, playerPhysics) {
+	determineAccelDirections(path, nextTile, playerPhysics) {
 		this.accelUp = false;
 		this.accelDown = false;
 		this.accelLeft = false;
@@ -66,14 +66,23 @@ export default class Steerer {
 		let goDown = false;
 		let goLeft = false;
 		let goRight = false;
+		let goal = path[path.length-1];
 
-		if (Math.round(playerPhysics.x/40) < nextTile.x) {
+		let newX = this.getPredictedPos(playerPhysics.x, playerPhysics.velocityX, 10, 0.025);
+		let newY = this.getPredictedPos(playerPhysics.y, playerPhysics.velocityY, 10, 0.025);
+
+		let newVeloX =  this.getNewVelocity(playerPhysics.velocityX, 0.025, 5);
+		let newVeloY =  this.getNewVelocity(playerPhysics.velocityY, 0.025, 5);
+		console.log(playerPhysics.x);
+		console.log(newX);
+
+		if (newX < ((nextTile.x*40))) {
 			goRight = true;
-		} else {
+		} else if (newX > ((nextTile.x*40))) {
 			goLeft = true;
 		}
 
-		if (Math.round(playerPhysics.y/40) < nextTile.y) {
+		if (newY < nextTile.y*40) {
 			goUp = true;
 		} else {
 			goDown = true;
@@ -110,6 +119,11 @@ export default class Steerer {
 	////will use to predict if safe to cap/etc
 	getNumStepsForVelocity(initialVelocity, finalVelocity, accel) {
 		return (Math.log((a*this.d+finalVelocity*(this.d-1))/(accel*this.d+initialVelocity*(this.d-1)))/Math.log(this.d));
+	}
+
+    //equation from: https://www.wolframalpha.com/input/?i=p%2B(1%2F60)*sum(v*d%5Ey+%2B+sum(a*d%5Ex,x,1,y),y,1,n)
+	getPredictedPos(p,v,n,a) {
+    	return (p+100*(this.d*(a*(Math.pow(this.d,n+1)-this.d*(n+1)+n)+(this.d-1)*v*(Math.pow(this.d,n)-1)))/(60*Math.pow(this.d-1,2)));
 	}
 
 	pressUpArrow() {

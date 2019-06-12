@@ -63,7 +63,7 @@ export default class Bot {
 	goToPoint() {
 		if (this.nextTile != null) {
 			let needChange = false;
-			this.steerer.determineAccelDirections(this.path, this.nextTile, this.playerInfo.getSelfTileLocation(), this.playerInfo.physicsInfo);
+			this.steerer.determineAccelDirections(this.path, this.nextTile, this.playerInfo.physicsInfo);
 			this.steerer.steer();
 		}
 	}
