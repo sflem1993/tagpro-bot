@@ -67,18 +67,33 @@ export default class Steerer {
 		let goLeft = false;
 		let goRight = false;
 		let goal = path[path.length-1];
+		let futureTile = path[0];
+		if (path.length <= 3) {
+			console.log("small path")
+			if (playerPhysics.velocityX > 0.5) {
+				this.accelLeft = true;
+			} else if (playerPhysics.velocityX < -0.5){
+				this.accelRight = true;
+			}
+			if (playerPhysics.velocityY > 0.5) {
+				this.accelDown = true;
+			} else if (playerPhysics.velocityY < -0.5) {
+				this.accelUp = true;
+			}
+			return;
+		} else {
+			futureTile = path[5];
+		}
 
-		let newX = this.getPredictedPos(playerPhysics.x, playerPhysics.velocityX, 10, 0.025);
-		let newY = this.getPredictedPos(playerPhysics.y, playerPhysics.velocityY, 10, 0.025);
+		let newX = this.getPredictedPos(playerPhysics.x, playerPhysics.velocityX, 8, 0.025);
+		let newY = this.getPredictedPos(playerPhysics.y, playerPhysics.velocityY, 8, 0.025);
 
-		let newVeloX =  this.getNewVelocity(playerPhysics.velocityX, 0.025, 5);
-		let newVeloY =  this.getNewVelocity(playerPhysics.velocityY, 0.025, 5);
-		console.log(playerPhysics.x);
-		console.log(newX);
+		console.log(playerPhysics.velocityX);
+		console.log(playerPhysics.velocityY);
 
 		if (newX < ((nextTile.x*40))) {
 			goRight = true;
-		} else if (newX > ((nextTile.x*40))) {
+		} else {
 			goLeft = true;
 		}
 
@@ -100,7 +115,8 @@ export default class Steerer {
 			this.accelLeft = true;
 		}
 
-		this.printAccels();
+		//this.printAccels();
+		this.steer();
 	}
 
 	printAccels() {

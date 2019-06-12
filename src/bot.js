@@ -13,8 +13,8 @@ export default class Bot {
 		this.pathfinder = new Pathfinder(tagpro.map);
 		this.steerer = new Steerer(tagpro);
 		this.self = tagpro.players[tagpro.playerId];
-		this.update1 = setInterval(this.getNextTile.bind(this), 15);
-  		this.update2 = setInterval(this.goToPoint.bind(this), 15);
+  		this.update2 = setInterval(this.goToPoint.bind(this), 200);
+  		this.update2 = setInterval(this.steer.bind(this), 10);
 	}
 
 	initializeSocketListeners() {
@@ -56,16 +56,18 @@ export default class Bot {
 		if (this.path.length > 2) {
 			this.nextTile = this.path[1];
 		} else {
-			this.nextTile = null;
+			this.nextTile = [];
 		}
 	}
 
 	goToPoint() {
-		if (this.nextTile != null) {
-			let needChange = false;
-			this.steerer.determineAccelDirections(this.path, this.nextTile, this.playerInfo.physicsInfo);
-			this.steerer.steer();
-		}
+		this.updatePlayerPosition();
+		this.getNextTile();
+		this.steerer.determineAccelDirections(this.path, this.nextTile, this.playerInfo.physicsInfo);
+	}
+
+	steer() {
+		this.steerer.steer();
 	}
 
 	sendAllMessage(chat) {
