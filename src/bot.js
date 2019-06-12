@@ -5,6 +5,7 @@ import PlayerInfo from './playerInfo.js';
 export default class Bot {
 	constructor(tagpro) {
 		this.actions = [];
+		this.tagpro = tagpro
 		this.socket = tagpro.socket;
 		this.gameInfo = new GameInfo(tagpro);
 		this.nextTile = null;
@@ -42,7 +43,7 @@ export default class Bot {
 	}
 
 	updatePlayerPosition() {
-		let player = tagpro.players[this.playerInfo.playerID];
+		let player = this.tagpro.players[this.playerInfo.playerID];
 		this.playerInfo.physicsInfo.x = player.x;
 		this.playerInfo.physicsInfo.y = player.y;
 		this.playerInfo.physicsInfo.velocityX = player.lx;
@@ -51,14 +52,22 @@ export default class Bot {
 
 	getNextTile() {
 		this.updatePlayerPosition();
-		let path = this.getPathToEnemyFlag();
-		this.nextTile = path[1];
+		this.path = this.getPathToEnemyFlag();
+		if (this.path.length > 2) {
+			this.nextTile = this.path[1];
+			this.futureTile = this.path[4];
+			if (typeof this.futureTile === 'undefined') {
+				this.futureTile= this.path[this.path.length-1];
+			}
+		} else {
+			this.nextTile = null;
+		}
 	}
 
 	goToPoint() {
 		if (this.nextTile != null) {
 			let needChange = false;
-			this.steerer.determineAccelDirections(this.nextTile, this.playerInfo.getSelfTileLocation());
+			this.steerer.determineAccelDirections(this.path, this.nextTile, this.futureTile, this.playerInfo.getSelfTileLocation(), this.playerInfo.physicsInfo);
 			this.steerer.steer();
 		}
 	}

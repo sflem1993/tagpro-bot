@@ -17,6 +17,10 @@ const KEY_DOWN = "keydown";
 export default class Steerer {
 	constructor(tagpro) {
 		this.tagpro = tagpro;
+		this.goUp = false;
+		this.goDown = false;
+		this.goLeft = false;
+		this.goRight = false;
 		this.accelUp = false;
 		this.accelDown = false;
 		this.accelLeft = false;
@@ -56,23 +60,68 @@ export default class Steerer {
 		}
 	}
 
-	determineAccelDirections(nextTile, playerPhysics) {
+	determineAccelDirections(path, nextTile, futureTile, playerTile, playerPhysics) {
 		//
-		if (playerPhysics.x < nextTile.x) {
-			this.accelRight = true;
-			this.accelLeft = false;
+		if (playerPhysics.x < nextTile.x*40) {
+			this.goRight = true;
+			this.goLeft = false;
 		} else {
-			this.accelRight = false;
-			this.accelLeft = true;
+			this.goRight = false;
+			this.goLeft = true;
 		}
 
-		if (playerPhysics.y < nextTile.y) {
+		if (playerPhysics.y < nextTile.y*40) {
+			this.goUp = true;
+			this.goDown = false;
+		} else {
+			this.goUp = false;
+			this.goDown = true;
+		}
+
+		this.accelUp = false;
+		this.accelDown = false;
+		this.accelLeft = false;
+		this.accelRight = false;
+
+		let xDiff = Math.abs(futureTile.x-playerTile.x);
+		let yDiff = Math.abs(futureTile.y-playerTile.y);
+		if (yDiff <= 1 || path.length<=2) {
+			if (playerPhysics.velocityY > 0.0) {
+				this.accelUp = false;
+				this.accelDown = true;
+			} else if (playerPhysics.velocityY < 0) {
+				this.accelUp = true;
+				this.accelDown = false;
+			}
+		} else if (this.goUp) {
 			this.accelUp = true;
 			this.accelDown = false;
-		} else {
+		} else if (this.goDown){//} && playerPhysics.velocityY > -1.0) {
 			this.accelUp = false;
 			this.accelDown = true;
 		}
+
+		if (xDiff <= 1 || path.length<=2) {
+			if (playerPhysics.velocityX > 0.0) {
+				this.accelLeft = true;
+				this.accelRight = false;
+			} else {
+				this.accelLeft = false;
+				this.accelRight = true;
+			}
+		} else if (this.goRight){//} && playerPhysics.velocityX < 2.0){
+			this.accelRight = true;
+			this.accelLeft = false;
+		} else if (this.goLeft){//} && playerPhysics.velocityX > -2.0){
+			this.accelLeft = true;
+			this.accelRight = false;
+		}
+		this.printAccels();
+	}
+
+	printAccels() {
+		let accels = {up: this.accelUp, down: this.accelDown, lefT: this.accelLeft, right: this.accelRight};
+		console.log("accelsss ", accels);
 	}
 
 	//todo - limit to 2.5
