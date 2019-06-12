@@ -55,10 +55,6 @@ export default class Bot {
 		this.path = this.getPathToEnemyFlag();
 		if (this.path.length > 2) {
 			this.nextTile = this.path[1];
-			this.futureTile = this.path[4];
-			if (typeof this.futureTile === 'undefined') {
-				this.futureTile= this.path[this.path.length-1];
-			}
 		} else {
 			this.nextTile = null;
 		}
@@ -67,7 +63,7 @@ export default class Bot {
 	goToPoint() {
 		if (this.nextTile != null) {
 			let needChange = false;
-			this.steerer.determineAccelDirections(this.path, this.nextTile, this.futureTile, this.playerInfo.getSelfTileLocation(), this.playerInfo.physicsInfo);
+			this.steerer.determineAccelDirections(this.path, this.nextTile, this.playerInfo.getSelfTileLocation(), this.playerInfo.physicsInfo);
 			this.steerer.steer();
 		}
 	}

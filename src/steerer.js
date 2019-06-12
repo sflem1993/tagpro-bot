@@ -56,7 +56,7 @@ export default class Steerer {
 		}
 	}
 
-	determineAccelDirections(path, nextTile, futureTile, playerTile, playerPhysics) {
+	determineAccelDirections(path, nextTile, playerTile, playerPhysics) {
 		this.accelUp = false;
 		this.accelDown = false;
 		this.accelLeft = false;
@@ -67,57 +67,30 @@ export default class Steerer {
 		let goLeft = false;
 		let goRight = false;
 
-		if (playerPhysics.x < nextTile.x*40) {
+		if (Math.round(playerPhysics.x/40) < nextTile.x) {
 			goRight = true;
-			goLeft = false;
 		} else {
-			goRight = false;
 			goLeft = true;
 		}
 
-		if (playerPhysics.y < nextTile.y*40) {
+		if (Math.round(playerPhysics.y/40) < nextTile.y) {
 			goUp = true;
-			goDown = false;
 		} else {
-			goUp = false;
 			goDown = true;
 		}
 
-
-
-		let xDiff = Math.abs(futureTile.x-playerTile.x);
-		let yDiff = Math.abs(futureTile.y-playerTile.y);
-		if (yDiff <= 1 || path.length<=2) {
-			if (playerPhysics.velocityY > 0.0) {
-				this.accelUp = false;
-				this.accelDown = true;
-			} else if (playerPhysics.velocityY < 0) {
-				this.accelUp = true;
-				this.accelDown = false;
-			}
-		} else if (goUp) {
+		if (goUp) {
 			this.accelUp = true;
-			this.accelDown = false;
-		} else if (goDown){//} && playerPhysics.velocityY > -1.0) {
-			this.accelUp = false;
+		} else if (goDown) {
 			this.accelDown = true;
 		}
 
-		if (xDiff <= 1 || path.length<=2) {
-			if (playerPhysics.velocityX > 0.0) {
-				this.accelLeft = true;
-				this.accelRight = false;
-			} else {
-				this.accelLeft = false;
-				this.accelRight = true;
-			}
-		} else if (goRight){//} && playerPhysics.velocityX < 2.0){
+		if (goRight) {
 			this.accelRight = true;
-			this.accelLeft = false;
-		} else if (goLeft){//} && playerPhysics.velocityX > -2.0){
+		} else if (goLeft) {
 			this.accelLeft = true;
-			this.accelRight = false;
 		}
+
 		this.printAccels();
 	}
 
