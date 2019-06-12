@@ -17,10 +17,6 @@ const KEY_DOWN = "keydown";
 export default class Steerer {
 	constructor(tagpro) {
 		this.tagpro = tagpro;
-		this.goUp = false;
-		this.goDown = false;
-		this.goLeft = false;
-		this.goRight = false;
 		this.accelUp = false;
 		this.accelDown = false;
 		this.accelLeft = false;
@@ -61,27 +57,33 @@ export default class Steerer {
 	}
 
 	determineAccelDirections(path, nextTile, futureTile, playerTile, playerPhysics) {
-		//
-		if (playerPhysics.x < nextTile.x*40) {
-			this.goRight = true;
-			this.goLeft = false;
-		} else {
-			this.goRight = false;
-			this.goLeft = true;
-		}
-
-		if (playerPhysics.y < nextTile.y*40) {
-			this.goUp = true;
-			this.goDown = false;
-		} else {
-			this.goUp = false;
-			this.goDown = true;
-		}
-
 		this.accelUp = false;
 		this.accelDown = false;
 		this.accelLeft = false;
 		this.accelRight = false;
+
+		let goUp = false;
+		let goDown = false;
+		let goLeft = false;
+		let goRight = false;
+
+		if (playerPhysics.x < nextTile.x*40) {
+			goRight = true;
+			goLeft = false;
+		} else {
+			goRight = false;
+			goLeft = true;
+		}
+
+		if (playerPhysics.y < nextTile.y*40) {
+			goUp = true;
+			goDown = false;
+		} else {
+			goUp = false;
+			goDown = true;
+		}
+
+
 
 		let xDiff = Math.abs(futureTile.x-playerTile.x);
 		let yDiff = Math.abs(futureTile.y-playerTile.y);
@@ -93,10 +95,10 @@ export default class Steerer {
 				this.accelUp = true;
 				this.accelDown = false;
 			}
-		} else if (this.goUp) {
+		} else if (goUp) {
 			this.accelUp = true;
 			this.accelDown = false;
-		} else if (this.goDown){//} && playerPhysics.velocityY > -1.0) {
+		} else if (goDown){//} && playerPhysics.velocityY > -1.0) {
 			this.accelUp = false;
 			this.accelDown = true;
 		}
@@ -109,10 +111,10 @@ export default class Steerer {
 				this.accelLeft = false;
 				this.accelRight = true;
 			}
-		} else if (this.goRight){//} && playerPhysics.velocityX < 2.0){
+		} else if (goRight){//} && playerPhysics.velocityX < 2.0){
 			this.accelRight = true;
 			this.accelLeft = false;
-		} else if (this.goLeft){//} && playerPhysics.velocityX > -2.0){
+		} else if (goLeft){//} && playerPhysics.velocityX > -2.0){
 			this.accelLeft = true;
 			this.accelRight = false;
 		}
